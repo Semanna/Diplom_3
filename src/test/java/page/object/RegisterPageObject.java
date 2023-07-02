@@ -4,50 +4,43 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 public class RegisterPageObject {
-    public static final String URL = "https://stellarburgers.nomoreparties.site/register";
+    public static final String REGISTER_PAGE_URL = "https://stellarburgers.nomoreparties.site/register";
     private final WebDriver driver;
-    private final By nameInput = By.xpath(
+    private static final By NAME_INPUT = By.xpath(
             "//label[@class='input__placeholder text noselect text_type_main-default' and text()='Имя']/parent::div/input");
-    private final By emailInput = By.xpath(
+    private static final By EMAIL_INPUT = By.xpath(
             "//label[@class='input__placeholder text noselect text_type_main-default' and text()='Email']/parent::div/input");
 
-    private final By passwordInput = By.xpath(
-            "//input[@type='password']");
-
-    private final By invalidPasswordLabel = By.xpath(
-            "//p[text()='Некорректный пароль']");
-
-    private final By registerButton = By.xpath(
-            "//button[text()='Зарегистрироваться']");
-
-    private final By loginButton = By.xpath(
-            "//a[text()='Войти']");
+    private static final By PASSWORD_INPUT = By.xpath("//input[@type='password']");
+    private static final By INVALID_PASSWORD_LABEL = By.xpath("//p[text()='Некорректный пароль']");
+    private static final By REGISTER_BUTTON = By.xpath("//button[text()='Зарегистрироваться']");
+    private static final By LOGIN_BUTTON = By.xpath("//a[text()='Войти']");
 
     public RegisterPageObject(WebDriver driver) {
         this.driver = driver;
     }
 
     public void setName(String name) {
-        driver.findElement(nameInput).sendKeys(name);
+        driver.findElement(NAME_INPUT).sendKeys(name);
     }
 
     public void setEmail(String email) {
-        driver.findElement(emailInput).sendKeys(email);
+        driver.findElement(EMAIL_INPUT).sendKeys(email);
     }
 
     public void setPassword(String pass) {
-        driver.findElement(passwordInput).sendKeys(pass);
+        driver.findElement(PASSWORD_INPUT).sendKeys(pass);
     }
 
     public boolean isInvalidPasswordDisplayed() {
-        return driver.findElement(invalidPasswordLabel).isDisplayed();
+        return driver.findElement(INVALID_PASSWORD_LABEL).isDisplayed();
     }
 
     public void clickRegisterButton() {
-        driver.findElement(registerButton).click();
+        driver.findElement(REGISTER_BUTTON).click();
     }
 
     public void clickLoginButton() {
-        driver.findElement(loginButton).click();
+        driver.findElement(LOGIN_BUTTON).click();
     }
 }

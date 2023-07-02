@@ -13,7 +13,7 @@ public class RegisterSteps {
     }
 
     @Step("Регистрация пользователя")
-    public static void register(User user, RegisterPageObject registerPageObject) {
+    public static void registerUser(User user, RegisterPageObject registerPageObject) {
         registerPageObject.setName(user.getName());
         registerPageObject.setEmail(user.getEmail());
         registerPageObject.setPassword(user.getPassword());
@@ -21,7 +21,7 @@ public class RegisterSteps {
     }
 
     @Step("Создание Пользователя через API")
-    public static String register(User user) {
+    public static String registerUser(User user) {
         return given()
                 .header("Content-type", "application/json")
                 .and()
@@ -36,7 +36,7 @@ public class RegisterSteps {
     }
 
     @Step("Удаление Пользователя через API")
-    public static void delete(String tokenToDelete) {
+    public static void deleteUser(String tokenToDelete) {
         given()
                 .header("Content-type", "application/json")
                 .header("authorization", tokenToDelete)
@@ -47,5 +47,22 @@ public class RegisterSteps {
                 .then()
                 .assertThat()
                 .statusCode(202);
+    }
+
+    @Step("Удаление Пользователя через API")
+    public static void deleteUser(User user) {
+        String token = given()
+                .header("Content-type", "application/json")
+                .and()
+                .body(user)
+                .when()
+                .post("api/auth/login")
+                .then()
+                .assertThat()
+                .statusCode(200)
+                .extract()
+                .path("accessToken");
+
+        deleteUser(token);
     }
 }

@@ -8,9 +8,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 public class PersonalAccountPageObject {
     private final WebDriver driver;
 
-    private final By logoutButton = By.xpath("//button[text()='Выход']");
-    private final By constructorLabel = By.xpath("//p[text()='Конструктор']");
-    private final By logo = By.xpath("//div[@class='AppHeader_header__logo__2D0X2']");
+    private static final By LOGOUT_BUTTON = By.xpath("//button[text()='Выход']");
+    private static final By CONSTRUCTOR_LABEL = By.xpath("//p[text()='Конструктор']");
+    private static final By LOGO = By.xpath("//div[@class='AppHeader_header__logo__2D0X2']");
 
     public PersonalAccountPageObject(WebDriver driver) {
         this.driver = driver;
@@ -33,14 +33,14 @@ public class PersonalAccountPageObject {
     }
 
     public void clickLogoutButton() {
-        driver.findElement(logoutButton).click();
+        driver.findElement(LOGOUT_BUTTON).click();
     }
 
     public void clickConstructorLabel() {
-        driver.findElement(constructorLabel).click();
+        driver.findElement(CONSTRUCTOR_LABEL).click();
     }
 
     public void clickLogo() {
-        driver.findElement(logo).click();
+        driver.findElement(LOGO).click();
     }
 }

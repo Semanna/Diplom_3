@@ -14,18 +14,29 @@ import static org.junit.Assert.assertTrue;
 
 public class PersonalAccountTest {
     private WebDriver driver;
-
     private LoginPageObject loginPageObject;
     private MainPageObject mainPageObject;
     private PersonalAccountPageObject personalAccountPageObject;
-
     private User user;
     private String tokenToDelete;
+
+    @Before
+    public void before() {
+        driver = DriverFactory.getDriver();
+
+        loginPageObject = new LoginPageObject(driver);
+        mainPageObject = new MainPageObject(driver);
+        personalAccountPageObject = new PersonalAccountPageObject(driver);
+
+        // Создаем нового пользователя, которого будем использовать в тестах входа в аккаунт
+        user = User.random();
+        tokenToDelete = RegisterSteps.registerUser(user);
+    }
 
     @Test
     @DisplayName("Переход в личный кабинет и выход из аккаунта")
     public void shouldGoToPersonalAccountPageAndLogout() {
-        driver.get(MainPageObject.URL);
+        driver.get(MainPageObject.MAIN_PAGE_URL);
 
         mainPageObject.clickLoginButton();
 
@@ -36,13 +47,13 @@ public class PersonalAccountTest {
         assertTrue(personalAccountPageObject.isLoginDisplayed(user.getEmail()));
 
         personalAccountPageObject.clickLogoutButton();
-        loginPageObject.waitPageLoads();
+        assertTrue(loginPageObject.isPageDisplayed());
     }
 
     @Test
     @DisplayName("Переход из личного кабинета в конструктор по клику на Конструктор")
     public void shouldGoToConstructor() {
-        driver.get(MainPageObject.URL);
+        driver.get(MainPageObject.MAIN_PAGE_URL);
 
         mainPageObject.clickLoginButton();
         LoginSteps.login(user, loginPageObject);
@@ -57,7 +68,7 @@ public class PersonalAccountTest {
     @Test
     @DisplayName("Переход из личного кабинета в конструктор по клику на логотип")
     public void shouldGoToConstructorByClickToLogo() {
-        driver.get(MainPageObject.URL);
+        driver.get(MainPageObject.MAIN_PAGE_URL);
 
         mainPageObject.clickLoginButton();
         LoginSteps.login(user, loginPageObject);
@@ -69,25 +80,12 @@ public class PersonalAccountTest {
         assertTrue(mainPageObject.isConstructorHeaderDisplayed());
     }
 
-    @Before
-    public void before() {
-        driver = Drivers.getDriver();
-
-        loginPageObject = new LoginPageObject(driver);
-        mainPageObject = new MainPageObject(driver);
-        personalAccountPageObject = new PersonalAccountPageObject(driver);
-
-        // Создаем нового пользователя, которого будем использовать в тестах входа в аккаунт
-        user = User.random();
-        tokenToDelete = RegisterSteps.register(user);
-    }
-
     @After
     public void teardown() {
         driver.quit();
 
         if (tokenToDelete != null) {
-            RegisterSteps.delete(tokenToDelete);
+            RegisterSteps.deleteUser(tokenToDelete);
             tokenToDelete = null;
         }
     }

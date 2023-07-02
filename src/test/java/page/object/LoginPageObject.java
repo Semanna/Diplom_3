@@ -1,6 +1,7 @@
 package page.object;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -8,33 +9,36 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 public class LoginPageObject {
     private final WebDriver driver;
 
-    private final By loginHeader = By.xpath("//h2[text()='Вход']");
-    private final By emailInput = By.xpath(
+    private static final By LOGIN_HEADER = By.xpath("//h2[text()='Вход']");
+    private static final By EMAIL_INPUT = By.xpath(
             "//label[@class='input__placeholder text noselect text_type_main-default' and text()='Email']/parent::div/input");
-    private final By passwordInput = By.xpath(
-            "//input[@type='password']");
+    private static final By PASSWORD_INPUT = By.xpath("//input[@type='password']");
 
-    private final By loginButton = By.xpath(
-            "//button[text()='Войти']");
+    private static final By LOGIN_BUTTON = By.xpath("//button[text()='Войти']");
 
     public LoginPageObject(WebDriver driver) {
         this.driver = driver;
     }
 
     public void setEmail(String email) {
-        driver.findElement(emailInput).sendKeys(email);
+        driver.findElement(EMAIL_INPUT).sendKeys(email);
     }
 
     public void setPassword(String pass) {
-        driver.findElement(passwordInput).sendKeys(pass);
+        driver.findElement(PASSWORD_INPUT).sendKeys(pass);
     }
 
-    public void waitPageLoads() {
+    public boolean isPageDisplayed() {
         WebDriverWait wait = new WebDriverWait(driver, 3);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(loginHeader));
+        try {
+            return wait.until(ExpectedConditions.visibilityOfElementLocated(LOGIN_HEADER)).isDisplayed();
+        }
+        catch (TimeoutException e) {
+            return false;
+        }
     }
 
     public void clickLoginButton() {
-        driver.findElement(loginButton).click();
+        driver.findElement(LOGIN_BUTTON).click();
     }
 }

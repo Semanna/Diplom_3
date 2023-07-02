@@ -11,43 +11,47 @@ import step.RegisterSteps;
 import static org.junit.Assert.assertTrue;
 
 public class RegisterTest {
-    RegisterPageObject registerPageObject;
-    LoginPageObject loginPageObject;
+    private RegisterPageObject registerPageObject;
+    private LoginPageObject loginPageObject;
     private WebDriver driver;
-
-    @Test
-    @DisplayName("Успешная регистрация")
-    public void shouldRegisterNewUser() {
-        User user = User.random();
-
-        driver.get(RegisterPageObject.URL);
-        RegisterSteps.register(user, registerPageObject);
-
-        loginPageObject.waitPageLoads();
-    }
-
-    @Test
-    @DisplayName("Ошибка регистрации, если  пароль меньше шести символов")
-    public void shouldNotRegisterNewUserWhenPasswordIsLessThan6() {
-        User user = User.random();
-        user.setPassword(user.getPassword().substring(0, 5));
-
-        driver.get(RegisterPageObject.URL);
-        RegisterSteps.register(user, registerPageObject);
-
-        assertTrue(registerPageObject.isInvalidPasswordDisplayed());
-    }
+    private User user;
 
     @Before
     public void before() {
-        driver = Drivers.getDriver();
+        driver = DriverFactory.getDriver();
 
         registerPageObject = new RegisterPageObject(driver);
         loginPageObject = new LoginPageObject(driver);
     }
 
+    @Test
+    @DisplayName("Успешная регистрация")
+    public void shouldRegisterNewUser() {
+        user = User.random();
+
+        driver.get(RegisterPageObject.REGISTER_PAGE_URL);
+        RegisterSteps.registerUser(user, registerPageObject);
+
+        assertTrue(loginPageObject.isPageDisplayed());
+    }
+
+    @Test
+    @DisplayName("Ошибка регистрации, если пароль меньше шести символов")
+    public void shouldNotRegisterNewUserWhenPasswordIsLessThan6() {
+        User user = User.random();
+        user.setPassword(user.getPassword().substring(0, 5));
+
+        driver.get(RegisterPageObject.REGISTER_PAGE_URL);
+        RegisterSteps.registerUser(user, registerPageObject);
+
+        assertTrue(registerPageObject.isInvalidPasswordDisplayed());
+    }
+
     @After
     public void teardown() {
         driver.quit();
+        if (user != null) {
+            RegisterSteps.deleteUser(user);
+        }
     }
 }
